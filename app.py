@@ -5,7 +5,7 @@ import json
 # --- Page Configuration & Styling ---
 st.set_page_config(
     page_title="NEXORIUM // Parametric 3D CAD Engine",
-    page_icon="📐",
+    page_icon="🧊", # Upgraded to a sleek 3D solid primitive icon
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -31,9 +31,9 @@ if "feature_tree" not in st.session_state:
 
 # --- Sidebar: Feature Tree & Parameter Controls ---
 with st.sidebar:
-    st.title("📐 NEXORIUM CAD")
+    st.title("🧊 NEXORIUM CAD")
     st.caption("Parametric Kernel: Manifold v2.5 (WASM-Client Driven)")
-    st.hr()
+    st.divider() 
     
     st.subheader("1. Global Part History")
     
@@ -50,7 +50,7 @@ with st.sidebar:
                 feature["x_offset"] = st.slider("Position Shift X", -60.0, 60.0, float(feature["x_offset"]), step=2.0, key=f"x_{idx}")
                 feature["y_offset"] = st.slider("Position Shift Y", -40.0, 40.0, float(feature["y_offset"]), step=2.0, key=f"y_{idx}")
 
-    st.hr()
+    st.divider() 
     if st.button("Reset Geometry To Default Blueprint"):
         st.session_state.feature_tree = [
             {"id": "base_block", "type": "Base Extrude", "width": 120.0, "height": 80.0, "depth": 40.0},

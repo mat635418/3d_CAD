@@ -105,27 +105,60 @@ html_workstation_code = """
                         <span>System Origin (0, 0, 0)</span>
                     </div>
                     
+                    <!-- Base Shape Protrusion Control Header -->
                     <div id="tree-base" class="flex items-center justify-between text-xs p-2 bg-[#212631] border border-[#2a303d] rounded cursor-pointer">
                         <div class="flex items-center">
                             <i data-lucide="layers" class="w-4 h-4 mr-2 text-[#3b82f6]"></i>
-                            <span class="font-medium text-white">Protrusion 1 (Base Extrude)</span>
+                            <span id="protrusion-title" class="font-medium text-white">Protrusion 1 (Base Extrude)</span>
                         </div>
                         <i data-lucide="edit-3" class="w-3 h-3 text-[#8C93A3]"></i>
                     </div>
 
-                    <!-- Indented children parameters -->
-                    <div class="pl-4 border-l border-[#242831] ml-4 mt-1 space-y-1 text-[11px] text-[#8C93A3]">
+                    <!-- STANDARD EXTRUSION PARAMETERS PANEL -->
+                    <div id="extrusion-params" class="pl-4 border-l border-[#242831] ml-4 mt-1 space-y-1 text-[11px] text-[#8C93A3]">
                         <div class="flex justify-between items-center p-1 hover:bg-[#1a1e26] rounded">
                             <span>Base Width (X)</span>
-                            <input type="range" id="param-width" min="40" max="200" value="120" oninput="updateParameters()" class="w-20 accent-[#2563eb]">
+                            <input type="range" id="param-width" min="40" max="200" value="120" oninput="updateParameters()" class="w-20 accent-[#3b82f6]">
                         </div>
                         <div class="flex justify-between items-center p-1 hover:bg-[#1a1e26] rounded">
                             <span>Base Height (Y)</span>
-                            <input type="range" id="param-height" min="40" max="150" value="80" oninput="updateParameters()" class="w-20 accent-[#2563eb]">
+                            <input type="range" id="param-height" min="40" max="150" value="80" oninput="updateParameters()" class="w-20 accent-[#3b82f6]">
                         </div>
                         <div class="flex justify-between items-center p-1 hover:bg-[#1a1e26] rounded">
                             <span>Extrude Depth (Z)</span>
-                            <input type="range" id="param-depth" min="10" max="100" value="40" oninput="updateParameters()" class="w-20 accent-[#2563eb]">
+                            <input type="range" id="param-depth" min="10" max="100" value="40" oninput="updateParameters()" class="w-20 accent-[#3b82f6]">
+                        </div>
+                    </div>
+
+                    <!-- B-SPLINE CAR LOFT PARAMETERS PANEL -->
+                    <div id="car-loft-params" class="pl-4 border-l border-[#242831] ml-4 mt-1 space-y-1 text-[11px] text-[#8C93A3] hidden">
+                        <div class="flex justify-between items-center p-1 hover:bg-[#1a1e26] rounded">
+                            <span>Car Length (Z)</span>
+                            <input type="range" id="param-car-length" min="120" max="240" value="170" oninput="updateParameters()" class="w-20 accent-[#10b981]">
+                        </div>
+                        <div class="flex justify-between items-center p-1 hover:bg-[#1a1e26] rounded">
+                            <span>Track Width (X)</span>
+                            <input type="range" id="param-car-width" min="60" max="120" value="85" oninput="updateParameters()" class="w-20 accent-[#10b981]">
+                        </div>
+                        <div class="flex justify-between items-center p-1 hover:bg-[#1a1e26] rounded">
+                            <span>Nose Height (Spline 1)</span>
+                            <input type="range" id="param-nose-height" min="10" max="35" value="22" oninput="updateParameters()" class="w-20 accent-[#10b981]">
+                        </div>
+                        <div class="flex justify-between items-center p-1 hover:bg-[#1a1e26] rounded">
+                            <span>Cabin Height (Spline 2)</span>
+                            <input type="range" id="param-cabin-height" min="30" max="70" value="52" oninput="updateParameters()" class="w-20 accent-[#10b981]">
+                        </div>
+                        <div class="flex justify-between items-center p-1 hover:bg-[#1a1e26] rounded">
+                            <span>Tail Height (Spline 3)</span>
+                            <input type="range" id="param-tail-height" min="15" max="50" value="34" oninput="updateParameters()" class="w-20 accent-[#10b981]">
+                        </div>
+                        <div class="flex justify-between items-center p-1 hover:bg-[#1a1e26] rounded">
+                            <span>Wheel Arch Scale</span>
+                            <input type="range" id="param-wheel-arch" min="10" max="30" value="18" oninput="updateParameters()" class="w-20 accent-[#10b981]">
+                        </div>
+                        <div class="flex items-center space-x-2 p-1.5 mt-1 bg-[#1a202c] rounded border border-[#2d3748]">
+                            <input type="checkbox" id="param-show-curves" checked onchange="updateParameters()" class="accent-[#10b981]">
+                            <span class="text-[10px] text-white">Show B-Spline Guide Curves</span>
                         </div>
                     </div>
                     
@@ -138,7 +171,7 @@ html_workstation_code = """
                         <i data-lucide="edit-3" class="w-3 h-3 text-[#8C93A3]"></i>
                     </div>
 
-                    <div class="pl-4 border-l border-[#242831] ml-4 mt-1 space-y-1 text-[11px] text-[#8C93A3]">
+                    <div id="cutout-params" class="pl-4 border-l border-[#242831] ml-4 mt-1 space-y-1 text-[11px] text-[#8C93A3]">
                         <div class="flex justify-between items-center p-1 hover:bg-[#1a1e26] rounded">
                             <span>Hole Radius</span>
                             <input type="range" id="param-radius" min="5" max="35" value="18" oninput="updateParameters()" class="w-20 accent-[#ef4444]">
@@ -171,8 +204,11 @@ html_workstation_code = """
                     <div class="p-2 bg-[#1c202a] rounded border border-[#2a303d] text-[11px] text-[#8C93A3] space-y-2">
                         <span class="font-semibold text-[#A0A5B5] block">Quick Presets</span>
                         <div class="flex flex-wrap gap-1">
-                            <button onclick="applyPreset('block')" class="bg-[#2d323e] hover:bg-[#383e4d] px-2 py-1 text-white rounded">Standard Block</button>
-                            <button onclick="applyPreset('bracket')" class="bg-[#2d323e] hover:bg-[#383e4d] px-2 py-1 text-white rounded">Machined Bracket</button>
+                            <button onclick="applyPreset('block')" class="bg-[#2d323e] hover:bg-[#383e4d] px-2 py-1 text-white rounded text-[10px]">Standard Block</button>
+                            <button onclick="applyPreset('bracket')" class="bg-[#2d323e] hover:bg-[#383e4d] px-2 py-1 text-white rounded text-[10px]">Machined Bracket</button>
+                            <button onclick="applyPreset('car')" class="bg-[#10b981]/20 hover:bg-[#10b981]/30 text-[#00ffcc] border border-[#10b981]/40 px-2 py-1 rounded text-[10px] font-bold w-full mt-1 flex items-center justify-center">
+                                <i data-lucide="car" class="w-3.5 h-3.5 mr-1.5"></i> B-Spline Lofted Car Preset
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -405,7 +441,7 @@ html_workstation_code = """
                 <!-- Chat Window Logs -->
                 <div id="ai-chat-box" class="flex-1 overflow-y-auto p-2.5 text-[11px] space-y-2 font-mono">
                     <div class="text-[#8C93A3]">
-                        <strong class="text-[#2563eb]">SolidEdge_X_Bot:</strong> I'm listening. Ask me to "Add stress factor," "Extrude part," "Render flat pattern," or "Generate 2D draft view."
+                        <strong class="text-[#2563eb]">SolidEdge_X_Bot:</strong> I'm listening. Ask me to "Add stress factor," "Extrude part," "Render flat pattern," "Loft B-splines," or "Generate 2D draft view."
                     </div>
                 </div>
 
@@ -434,7 +470,17 @@ html_workstation_code = """
             color: '#a5b4fc',
             finish: 'aluminum',
             action: 'inspect', // inspect or cut
-            module: 'modeling' // modeling, drafting, assembly, simulation, routing
+            module: 'modeling', // modeling, drafting, assembly, simulation, routing
+            modelType: 'extrude', // extrude or car_loft
+            
+            // Parametric Loft specific fields
+            carLength: 170,
+            carWidth: 85,
+            noseHeight: 22,
+            cabinHeight: 52,
+            tailHeight: 34,
+            wheelArchScale: 18,
+            showCurves: true
         };
 
         let state = { ...defaultState };
@@ -442,7 +488,7 @@ html_workstation_code = """
         // Graphics system setup variables
         let scene, camera, renderer, controls, workspaceMesh;
         let ambientLight, mainLight, fillLight;
-        let stressContours = []; // Tracks structural stress lines/FEA simulation models
+        let splineHelpers = []; // Visualizes the 2D B-spline curves defining loft segments
         let wireMesh = null; // Routing wires indicator
         let explosionOffset = 0; // Large assemblies slide value
 
@@ -453,7 +499,7 @@ html_workstation_code = """
             scene.background = new THREE.Color(0x11141a);
 
             camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 1, 1000);
-            camera.position.set(150, 160, 220);
+            camera.position.set(160, 150, 210);
 
             renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
             renderer.setSize(container.clientWidth, container.clientHeight);
@@ -468,11 +514,11 @@ html_workstation_code = """
             ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
             scene.add(ambientLight);
 
-            mainLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            mainLight = new THREE.DirectionalLight(0xffffff, 0.85);
             mainLight.position.set(150, 300, 200);
             scene.add(mainLight);
 
-            fillLight = new THREE.DirectionalLight(0x3b82f6, 0.3);
+            fillLight = new THREE.DirectionalLight(0x3b82f6, 0.35);
             fillLight.position.set(-150, -200, -100);
             scene.add(fillLight);
 
@@ -496,44 +542,30 @@ html_workstation_code = """
             }, 1500);
         }
 
+        // Clean up visual helpers
+        function clearSplineHelpers() {
+            splineHelpers.forEach(helper => scene.remove(helper));
+            splineHelpers = [];
+        }
+
+        // Helper function: Build a smooth CatmullRom spline from control points for visualization
+        function drawGuideSpline(points, colorHex = 0x00FFCC) {
+            const curve = new THREE.CatmullRomCurve3(points, true); // closed spline loop
+            const geometry = new THREE.BufferGeometry().setFromPoints(curve.getPoints(50));
+            const material = new THREE.LineBasicMaterial({ color: colorHex, linewidth: 2 });
+            const line = new THREE.Line(geometry, material);
+            scene.add(line);
+            splineHelpers.push(line);
+        }
+
         // Analytical Solid Reconstruction Engine (Runs direct geometry updates instantly)
         function compilePartGeometry() {
-            // Remove routing meshes / wire assets if switching
             clearRoutingMeshes();
+            clearSplineHelpers();
 
-            // Calculate profiles
-            const w = state.width;
-            const h = state.height;
+            let partGeometry;
 
-            const partOutline = new THREE.Shape();
-            partOutline.moveTo(-w/2, -h/2);
-            partOutline.lineTo(w/2, -h/2);
-            partOutline.lineTo(w/2, h/2);
-            partOutline.lineTo(-w/2, h/2);
-            partOutline.lineTo(-w/2, -h/2);
-
-            // Boolean Core Removal
-            const cutoutCircle = new THREE.Path();
-            cutoutCircle.absarc(state.x, state.y, state.radius, 0, Math.PI * 2, true);
-            partOutline.holes.push(cutoutCircle);
-
-            const extrusionDepth = state.depth;
-
-            const settings = {
-                depth: extrusionDepth,
-                bevelEnabled: true,
-                bevelThickness: 1.5,
-                bevelSize: 0.5,
-                bevelSegments: 4,
-                curveSegments: 64
-            };
-
-            const partGeometry = new THREE.ExtrudeGeometry(partOutline, settings);
-            partGeometry.computeVertexNormals();
-
-            if (workspaceMesh) scene.remove(workspaceMesh);
-
-            // Evaluate finish specifications
+            // Set up Material properties
             const materialSettings = { color: new THREE.Color(state.color) };
             if (state.finish === 'aluminum') {
                 materialSettings.roughness = 0.22;
@@ -546,17 +578,172 @@ html_workstation_code = """
                 materialSettings.metalness = 0.05;
             }
 
+            // OPTION A: B-SPLINE MULTI-SECTION LOFT ENGINE (Sleek Parametric Supercar Body)
+            if (state.modelType === 'car_loft') {
+                const numSlices = 18;  // Density of Z stations
+                const numRotations = 40; // Radial density per section
+
+                const loftGeometry = new THREE.BufferGeometry();
+                const vertices = [];
+                const indices = [];
+
+                // Math matrices computing coordinates directly based on control splines
+                const len = state.carLength;
+                const width = state.carWidth;
+                const hNose = state.noseHeight;
+                const hCabin = state.cabinHeight;
+                const hTail = state.tailHeight;
+                const archSize = state.wheelArchScale;
+
+                // Define 4 structural cross-section stations along Z depth
+                // Station points map: [X, Y, Z]
+                const createSectionPoints = (zPos, baseW, peakH, flatTopFactor = 0.5) => {
+                    const sectionPts = [];
+                    for (let i = 0; i <= numRotations; i++) {
+                        const theta = (i / numRotations) * Math.PI * 2;
+                        let x = Math.sin(theta) * (baseW / 2);
+                        let y = Math.cos(theta) * peakH;
+
+                        // Create flat floor underframe
+                        if (y < -12) {
+                            y = -12;
+                        }
+                        
+                        // Aero dynamic cabin crest adjustments
+                        if (y > 0 && Math.abs(x) < baseW * 0.35) {
+                            y += (1.0 - Math.abs(x) / (baseW * 0.35)) * flatTopFactor * 8;
+                        }
+
+                        // Wheel arch coordinate recess calculation
+                        const normZ = zPos / (len / 2); // -1 to 1 range
+                        const isFrontArch = (normZ > -0.65 && normZ < -0.35);
+                        const isRearArch = (normZ > 0.35 && normZ < 0.65);
+                        
+                        if ((isFrontArch || isRearArch) && Math.abs(x) > (baseW / 2) * 0.85 && y < 5) {
+                            // Subtractive arch profile sculpt
+                            x *= 0.80;
+                            y += Math.max(0, archSize - Math.abs(y + 12));
+                        }
+
+                        sectionPts.push(new THREE.Vector3(x, y, zPos));
+                    }
+                    return sectionPts;
+                };
+
+                // Generate and Cache B-spline Stations
+                const sections = [];
+                for (let slice = 0; slice <= numSlices; slice++) {
+                    const t = slice / numSlices; // 0 to 1 parameter
+                    const z = -len/2 + t * len;
+
+                    // Compute dynamic profile parameters at this specific slice via spline interpolation
+                    let currentWidth = width * 0.55;
+                    let currentHeight = 12;
+                    let topFlatFactor = 0.1;
+
+                    if (t < 0.3) {
+                        // Nose segment: Loft from tip to front windshield
+                        const localT = t / 0.3;
+                        currentWidth = width * (0.35 + 0.45 * localT);
+                        currentHeight = 10 + (hNose - 10) * localT;
+                    } else if (t < 0.65) {
+                        // Cabin greenhouse segment: Sweeps up to peakH
+                        const localT = (t - 0.3) / 0.35;
+                        currentWidth = width * (0.80 + 0.20 * Math.sin(localT * Math.PI / 2));
+                        currentHeight = hNose + (hCabin - hNose) * Math.sin(localT * Math.PI / 2);
+                        topFlatFactor = 1.2 * Math.sin(localT * Math.PI);
+                    } else {
+                        // Tail spoiler deck: Loft down to tail deck and curl spoiler lip
+                        const localT = (t - 0.65) / 0.35;
+                        currentWidth = width * (1.0 - 0.40 * localT);
+                        currentHeight = hCabin - (hCabin - hTail) * localT;
+                        if (localT > 0.85) {
+                            currentHeight += (localT - 0.85) * 12; // Spoiler lip curl kick!
+                        }
+                    }
+
+                    const pts = createSectionPoints(z, currentWidth, currentHeight, topFlatFactor);
+                    sections.push(pts);
+
+                    // Render Cyan Control Guide Curves visually to illustrate CAD operations
+                    if (state.showCurves && (slice === 0 || slice === Math.floor(numSlices * 0.3) || slice === Math.floor(numSlices * 0.65) || slice === numSlices)) {
+                        drawGuideSpline(pts, 0x00FFCC);
+                    }
+                }
+
+                // Generate lofted mesh surface vertices array
+                for (let s = 0; s <= numSlices; s++) {
+                    const currentSection = sections[s];
+                    for (let r = 0; r <= numRotations; r++) {
+                        const pt = currentSection[r];
+                        vertices.push(pt.x, pt.y, pt.z);
+                    }
+                }
+
+                // Compile triangle face indices over the double-interpolated B-spline grid
+                for (let s = 0; s < numSlices; s++) {
+                    for (let r = 0; r < numRotations; r++) {
+                        const currentIdx = s * (numRotations + 1) + r;
+                        const nextSliceIdx = (s + 1) * (numRotations + 1) + r;
+
+                        // Face 1
+                        indices.push(currentIdx, nextSliceIdx, currentIdx + 1);
+                        // Face 2
+                        indices.push(currentIdx + 1, nextSliceIdx, nextSliceIdx + 1);
+                    }
+                }
+
+                loftGeometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+                loftGeometry.setIndex(indices);
+                loftGeometry.computeVertexNormals();
+
+                partGeometry = loftGeometry;
+
+            // OPTION B: STANDARD EXTRUSION BLOCK ENGINE (Original Part)
+            } else {
+                const w = state.width;
+                const h = state.height;
+
+                const partOutline = new THREE.Shape();
+                partOutline.moveTo(-w/2, -h/2);
+                partOutline.lineTo(w/2, -h/2);
+                partOutline.lineTo(w/2, h/2);
+                partOutline.lineTo(-w/2, h/2);
+                partOutline.lineTo(-w/2, -h/2);
+
+                // Subtractive Circle
+                const cutoutCircle = new THREE.Path();
+                cutoutCircle.absarc(state.x, state.y, state.radius, 0, Math.PI * 2, true);
+                partOutline.holes.push(cutoutCircle);
+
+                const settings = {
+                    depth: state.depth,
+                    bevelEnabled: true,
+                    bevelThickness: 1.5,
+                    bevelSize: 0.5,
+                    bevelSegments: 4,
+                    curveSegments: 64
+                };
+
+                partGeometry = new THREE.ExtrudeGeometry(partOutline, settings);
+                partGeometry.computeVertexNormals();
+            }
+
+            if (workspaceMesh) scene.remove(workspaceMesh);
+
             const modelMaterial = new THREE.MeshStandardMaterial(materialSettings);
             workspaceMesh = new THREE.Mesh(partGeometry, modelMaterial);
             
-            // Adjust coordinates translation dynamically inside workspace
-            workspaceMesh.position.z = -extrusionDepth / 2;
-            
-            // Handle Explode Views (Displacement offset along Y Vector)
-            if (state.module === 'assembly') {
-                workspaceMesh.position.y = explosionOffset;
+            // Positioning adjust
+            if (state.modelType === 'car_loft') {
+                workspaceMesh.position.set(0, 10, 0);
             } else {
-                workspaceMesh.position.y = 0;
+                workspaceMesh.position.set(0, 0, -state.depth / 2);
+            }
+            
+            // Explode View displacement offsets
+            if (state.module === 'assembly') {
+                workspaceMesh.position.y += explosionOffset;
             }
 
             scene.add(workspaceMesh);
@@ -592,13 +779,11 @@ html_workstation_code = """
                 hudLabel.innerText = `EXPLODED OFFSET: ${explosionOffset}mm`;
             } else if (moduleName === 'drafting') {
                 bottomHud.classList.add('opacity-0');
-                // Trigger drafting automation layouts directly
                 trigger2DDraftingLayout();
             } else {
                 bottomHud.classList.add('opacity-0');
             }
 
-            // Restore defaults on model configuration switching
             clearStressHeatmaps();
             compilePartGeometry();
             
@@ -621,36 +806,47 @@ html_workstation_code = """
             if (results.length > 0) {
                 const intersectionPoint = results[0].point;
                 
-                // Keep the machined feature hole within model outer perimeter boundary limits
+                // Boundaries limit checks
                 const safetyBoundaryW = state.width / 2 - state.radius;
                 const safetyBoundaryH = state.height / 2 - state.radius;
 
                 state.x = Math.max(-safetyBoundaryW, Math.min(safetyBoundaryW, Math.round(intersectionPoint.x)));
                 state.y = Math.max(-safetyBoundaryH, Math.min(safetyBoundaryH, Math.round(intersectionPoint.y)));
 
-                // Sync controls with direct canvas action results
+                // Sync controls
                 document.getElementById('param-x').value = state.x;
                 document.getElementById('param-y').value = state.y;
 
                 compilePartGeometry();
-                setWorkspaceAction('inspect'); // Transition cursor pointer style back to safety orbit rotation
+                setWorkspaceAction('inspect'); // Safety orbit rotation
 
                 logToAIChat("System", `Synchronous action: Recalculated cut center coordinates to X: ${state.x} | Y: ${state.y}`);
-                updateHUDStatus(`🎯 Synchronous Machine Move: Cut 1 shifted -> [X: ${state.x}, Y: ${state.y}]`);
+                updateHUDStatus(`🎯 Synchronous Move: Cut 1 shifted -> [X: ${state.x}, Y: ${state.y}]`);
             }
         }
 
         // Dynamic State synchronizer
         function updateParameters() {
-            state.width = parseFloat(document.getElementById('param-width').value);
-            state.height = parseFloat(document.getElementById('param-height').value);
-            state.depth = parseFloat(document.getElementById('param-depth').value);
+            if (state.modelType === 'car_loft') {
+                state.carLength = parseFloat(document.getElementById('param-car-length').value);
+                state.carWidth = parseFloat(document.getElementById('param-car-width').value);
+                state.noseHeight = parseFloat(document.getElementById('param-nose-height').value);
+                state.cabinHeight = parseFloat(document.getElementById('param-cabin-height').value);
+                state.tailHeight = parseFloat(document.getElementById('param-tail-height').value);
+                state.wheelArchScale = parseFloat(document.getElementById('param-wheel-arch').value);
+                state.showCurves = document.getElementById('param-show-curves').checked;
+            } else {
+                state.width = parseFloat(document.getElementById('param-width').value);
+                state.height = parseFloat(document.getElementById('param-height').value);
+                state.depth = parseFloat(document.getElementById('param-depth').value);
+            }
+            
             state.radius = parseFloat(document.getElementById('param-radius').value);
             state.x = parseFloat(document.getElementById('param-x').value);
             state.y = parseFloat(document.getElementById('param-y').value);
 
             compilePartGeometry();
-            updateHUDStatus(`⚡ Geometric parameters updated on feature tree path.`);
+            updateHUDStatus(`⚡ CAD geometric parameters recalculated dynamically.`);
         }
 
         function setWorkspaceAction(actionType) {
@@ -695,7 +891,6 @@ html_workstation_code = """
         function triggerStressSimulation() {
             clearStressHeatmaps();
             
-            // Interpolate gradient stress colors on actual mechanical mesh contours
             const meshGeometry = workspaceMesh.geometry;
             const positions = meshGeometry.attributes.position;
             const vertexCount = positions.count;
@@ -704,19 +899,28 @@ html_workstation_code = """
             for (let i = 0; i < vertexCount; i++) {
                 const vx = positions.getX(i);
                 const vy = positions.getY(i);
+                const vz = positions.getZ(i);
                 
-                // Simulate stresses clustering near geometric discontinuity holes boundary
-                const distanceToCut = Math.sqrt(Math.pow(vx - state.x, 2) + Math.pow(vy - state.y, 2));
-                const deltaStress = Math.exp(-distanceToCut / (state.radius * 2.2));
+                let deltaStress = 0.1;
+                
+                if (state.modelType === 'car_loft') {
+                    // Simulate aerodynamic stress drag forces concentrated on windshield base and front scoop nose
+                    const distToWindshield = Math.sqrt(Math.pow(vy - state.noseHeight, 2) + Math.pow(vz + 15, 2));
+                    const noseImpact = Math.exp(-Math.pow(vz + state.carLength/2, 2)/400);
+                    deltaStress = Math.max(0.08, 0.9 * Math.exp(-distToWindshield/30) + 0.75 * noseImpact);
+                } else {
+                    // Standard block stress concentrators
+                    const distanceToCut = Math.sqrt(Math.pow(vx - state.x, 2) + Math.pow(vy - state.y, 2));
+                    deltaStress = Math.exp(-distanceToCut / (state.radius * 2.2));
+                }
 
                 const colorValue = new THREE.Color();
-                // Interpolate from cold structural blue (safe) to hot mechanical red (critical)
                 if (deltaStress > 0.6) {
-                    colorValue.setRGB(1.0, (1 - deltaStress) * 2, 0.0); // Extreme red hotspot
+                    colorValue.setRGB(1.0, (1 - deltaStress) * 2, 0.0); // Hot red stress peak
                 } else if (deltaStress > 0.25) {
-                    colorValue.setRGB(deltaStress * 1.5, 0.8, 0.2); // Mid orange
+                    colorValue.setRGB(deltaStress * 1.5, 0.8, 0.2); // Mid warning orange
                 } else {
-                    colorValue.setRGB(0.1, 0.3, 0.8); // Cool stress blue
+                    colorValue.setRGB(0.1, 0.3, 0.8); // Cold static safety blue
                 }
 
                 stressColors.push(colorValue.r, colorValue.g, colorValue.b);
@@ -724,20 +928,23 @@ html_workstation_code = """
 
             meshGeometry.setAttribute('color', new THREE.Float32BufferAttribute(stressColors, 3));
             
-            // Switch current model material to support direct structural vertex coloring shader math
             workspaceMesh.material = new THREE.MeshStandardMaterial({
                 vertexColors: true,
                 roughness: 0.3,
                 metalness: 0.2
             });
 
-            logToAIChat("System", "Finite Element Method (FEM) solver complete. Structural strain gradients successfully rendered on 3D boundary face.");
-            updateHUDStatus("📊 FEM/CAE ANALYSIS COMPLETE // CRITICAL HOTSPOTS IDENTIFIED");
+            logToAIChat("System", "Finite Element Method (FEM) solver complete. Aerodynamic stress vectors successfully simulated and mapped.");
+            updateHUDStatus("📊 FEM/CAE AIR DRAG STRESS SIMULATION MAPPED");
+        }
+
+        function clearFEAMesh() {
+            clearStressHeatmaps();
+            updateHUDStatus("⚡ Stress mesh telemetry cleared.");
         }
 
         function clearStressHeatmaps() {
             if (workspaceMesh) {
-                // Restore primary monochromatic finish material
                 const cleanMat = { color: new THREE.Color(state.color) };
                 if (state.finish === 'aluminum') {
                     cleanMat.roughness = 0.22; cleanMat.metalness = 0.80;
@@ -757,15 +964,25 @@ html_workstation_code = """
         function triggerRoutingWire() {
             clearRoutingMeshes();
 
-            // Construct smooth spline path tracking wire curvature through routing spaces
-            const pathSpline = new THREE.CatmullRomCurve3([
-                new THREE.Vector3(-state.width/2 - 20, 10, 10),
-                new THREE.Vector3(state.x - state.radius - 5, state.y + 10, state.depth/2 + 10),
-                new THREE.Vector3(state.x + state.radius + 5, state.y - 10, state.depth/2 + 20),
-                new THREE.Vector3(state.width/2 + 25, -20, -10)
-            ]);
+            let pathSpline;
+            if (state.modelType === 'car_loft') {
+                // Route wiring harness down the central transmission tunnel
+                pathSpline = new THREE.CatmullRomCurve3([
+                    new THREE.Vector3(0, -6, -state.carLength/2 - 10),
+                    new THREE.Vector3(0, -8, -15),
+                    new THREE.Vector3(0, -8, 20),
+                    new THREE.Vector3(0, -4, state.carLength/2 + 10)
+                ]);
+            } else {
+                pathSpline = new THREE.CatmullRomCurve3([
+                    new THREE.Vector3(-state.width/2 - 20, 10, 10),
+                    new THREE.Vector3(state.x - state.radius - 5, state.y + 10, state.depth/2 + 10),
+                    new THREE.Vector3(state.x + state.radius + 5, state.y - 10, state.depth/2 + 20),
+                    new THREE.Vector3(state.width/2 + 25, -20, -10)
+                ]);
+            }
 
-            const routingGeometry = new THREE.TubeGeometry(pathSpline, 64, 3, 12, false);
+            const routingGeometry = new THREE.TubeGeometry(pathSpline, 64, 2.5, 12, false);
             const wireMaterial = new THREE.MeshStandardMaterial({
                 color: 0xec4899,
                 roughness: 0.3,
@@ -776,8 +993,8 @@ html_workstation_code = """
             wireMesh = new THREE.Mesh(routingGeometry, wireMaterial);
             scene.add(wireMesh);
 
-            logToAIChat("System", "Collision warning logic active: Electrical routing vector generated clear of cutout boundary tolerances.");
-            updateHUDStatus("🔌 3D SYSTEM ROUTING HARNESS INSTANTIATED AT CO-ORDINATES");
+            logToAIChat("System", "Automated system harness pathfinding sequence computed. Underbody routing completed.");
+            updateHUDStatus("🔌 3D ELECTRICAL HARNESS INTELLIGENTLY ROUTED");
         }
 
         function clearRoutingMeshes() {
@@ -792,24 +1009,18 @@ html_workstation_code = """
             clearRoutingMeshes();
             clearStressHeatmaps();
 
-            // Auto position views resembling exact 2D projection draft layout
             camera.position.set(0, 0, 240);
             controls.target.set(0, 0, 0);
             controls.update();
 
-            logToAIChat("System", "Orthographic sheet automation generated: Front, Right side, and top views aligned to sheet profile boundary standard.");
-            updateHUDStatus("📐 Orthographic Sheet projected // AI Annotating Dimensions");
+            logToAIChat("System", "Orthographic projection drawing complete: Rendered standard drafting layout sheet.");
+            updateHUDStatus("📐 Orthographic Drafting sheets generated");
         }
 
         // Generative Design topology optimizers
         function triggerTopologyOptimization() {
             clearStressHeatmaps();
             
-            // To mimic topology reduction, we construct an advanced porous structural matrix
-            const baseData = state;
-            const boundingBox = new THREE.BoxGeometry(baseData.width, baseData.height, baseData.depth);
-            
-            // Mutate model finish into computational organic web lattice
             workspaceMesh.material = new THREE.MeshStandardMaterial({
                 color: 0x10b981,
                 wireframe: true,
@@ -817,7 +1028,7 @@ html_workstation_code = """
                 opacity: 0.85
             });
 
-            logToAIChat("System", "Topology Optimization complete: Removed 42.6% redundant solid boundary mass while preserving target shear load parameters.");
+            logToAIChat("System", "Generative algorithm finished. Optimized shell structure for aerodynamic load efficiency.");
             updateHUDStatus("🌱 GENERATIVE DESIGN OPTIMIZATION COMPLETE // MASS REDUCED BY 42.6%");
         }
 
@@ -843,30 +1054,57 @@ html_workstation_code = """
 
         // Global part presets
         function applyPreset(presetType) {
-            if (presetType === 'block') {
-                state = { ...defaultState };
-            } else if (presetType === 'bracket') {
-                state = {
-                    ...defaultState,
-                    width: 160,
-                    height: 100,
-                    depth: 25,
-                    radius: 28,
-                    x: -20,
-                    y: 10
-                };
+            const extParams = document.getElementById('extrusion-params');
+            const carParams = document.getElementById('car-loft-params');
+            const cutoutParams = document.getElementById('cutout-params');
+            const treeBase = document.getElementById('protrusion-title');
+
+            if (presetType === 'car') {
+                state.modelType = 'car_loft';
+                treeBase.innerText = "Protrusion 1 (B-Spline Loft)";
+                
+                // Toggle active parameter sliders in UI Pathfinder
+                extParams.classList.add('hidden');
+                cutoutParams.classList.add('hidden'); // Disable cutout for car body preset
+                carParams.classList.remove('hidden');
+
+                // Adjust camera for car body view
+                camera.position.set(160, 110, 190);
+                controls.update();
+            } else {
+                state.modelType = 'extrude';
+                treeBase.innerText = "Protrusion 1 (Base Extrude)";
+                
+                extParams.classList.remove('hidden');
+                cutoutParams.classList.remove('hidden');
+                carParams.classList.add('hidden');
+
+                if (presetType === 'block') {
+                    state = { ...state, ...defaultState, modelType: 'extrude' };
+                } else if (presetType === 'bracket') {
+                    state = {
+                        ...state,
+                        width: 160,
+                        height: 100,
+                        depth: 25,
+                        radius: 28,
+                        x: -20,
+                        y: 10,
+                        modelType: 'extrude'
+                    };
+                }
+
+                // Sync sliders back
+                document.getElementById('param-width').value = state.width;
+                document.getElementById('param-height').value = state.height;
+                document.getElementById('param-depth').value = state.depth;
+                document.getElementById('param-radius').value = state.radius;
+                document.getElementById('param-x').value = state.x;
+                document.getElementById('param-y').value = state.y;
             }
 
-            // Sync structural UI elements
-            document.getElementById('param-width').value = state.width;
-            document.getElementById('param-height').value = state.height;
-            document.getElementById('param-depth').value = state.depth;
-            document.getElementById('param-radius').value = state.radius;
-            document.getElementById('param-x').value = state.x;
-            document.getElementById('param-y').value = state.y;
-
             compilePartGeometry();
-            logToAIChat("System", `Loaded structural preset blueprint [${presetType.toUpperCase()}]`);
+            logToAIChat("System", `Loaded active CAD preset blueprint [${presetType.toUpperCase()}]`);
         }
 
         // AI Assistant Command Interface
@@ -882,22 +1120,32 @@ html_workstation_code = """
                 const lowerPrompt = promptText.toLowerCase();
                 if (lowerPrompt.includes("stress") || lowerPrompt.includes("fea") || lowerPrompt.includes("simulation")) {
                     triggerStressSimulation();
-                    logToAIChat("SolidEdge_X_Bot", "Understood. I have activated the Von Mises solver and mapped the high-tension strain contours across the cut faces.");
+                    logToAIChat("SolidEdge_X_Bot", "Understood. I have activated the FEM solver and mapped aerodynamic pressure strain gradients across the B-spline shell.");
+                } else if (lowerPrompt.includes("car") || lowerPrompt.includes("loft") || lowerPrompt.includes("bspline") || lowerPrompt.includes("b-spline")) {
+                    applyPreset('car');
+                    logToAIChat("SolidEdge_X_Bot", "Confirmed. I have deployed the parametric B-Spline Lofting engine and loaded a streamlined vehicle body shell with editable curves.");
                 } else if (lowerPrompt.includes("extrude") || lowerPrompt.includes("dimensions") || lowerPrompt.includes("resize")) {
-                    state.width = 150;
-                    state.height = 90;
-                    document.getElementById('param-width').value = 150;
-                    document.getElementById('param-height').value = 90;
-                    compilePartGeometry();
-                    logToAIChat("SolidEdge_X_Bot", "Confirmed. Base extrusion profile resized to X: 150mm and Y: 90mm without rolling back parent-child nodes.");
+                    if (state.modelType === 'car_loft') {
+                        state.carLength = 200;
+                        document.getElementById('param-car-length').value = 200;
+                        compilePartGeometry();
+                        logToAIChat("SolidEdge_X_Bot", "Aerodynamic chassis length updated to 200mm.");
+                    } else {
+                        state.width = 150;
+                        state.height = 90;
+                        document.getElementById('param-width').value = 150;
+                        document.getElementById('param-height').value = 90;
+                        compilePartGeometry();
+                        logToAIChat("SolidEdge_X_Bot", "Base extrusion profile resized to X: 150mm and Y: 90mm.");
+                    }
                 } else if (lowerPrompt.includes("flat") || lowerPrompt.includes("pattern") || lowerPrompt.includes("sheet")) {
                     triggerSheetMetalPattern();
-                    logToAIChat("SolidEdge_X_Bot", "Extracted flat model layout boundary vector matrix successfully. Bending relief channels preserved.");
+                    logToAIChat("SolidEdge_X_Bot", "Extracted flat model layout boundary vector matrix successfully.");
                 } else if (lowerPrompt.includes("draft") || lowerPrompt.includes("2d") || lowerPrompt.includes("document")) {
                     trigger2DDraftingLayout();
                     logToAIChat("SolidEdge_X_Bot", "Orthographic draft page constructed. Dimensions aligned to ISO limits.");
                 } else {
-                    logToAIChat("SolidEdge_X_Bot", "Command processed. No specific feature target found. Try typing 'Trigger stress simulation' or 'Resize base extrude parameters'.");
+                    logToAIChat("SolidEdge_X_Bot", "Command processed. Try typing 'Loft B-spline car body' or 'Trigger stress simulation'.");
                 }
             }, 800);
         }
@@ -907,7 +1155,7 @@ html_workstation_code = """
             camera.position.set(0, 0, 180);
             controls.target.set(0, 0, 0);
             controls.update();
-            logToAIChat("System", "Flat Pattern geometry derived from analytical solid sheet. DXF metadata package ready for download.");
+            logToAIChat("System", "Flat Pattern geometry derived successfully.");
         }
 
         function logToAIChat(sender, text) {

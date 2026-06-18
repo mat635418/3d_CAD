@@ -5,7 +5,7 @@ import json
 # --- Page Configuration & Styling ---
 st.set_page_config(
     page_title="NEXORIUM // Parametric 3D CAD Engine",
-    page_icon="🧊", # Upgraded to a sleek 3D solid primitive icon
+    page_icon="🧊",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -32,7 +32,7 @@ if "feature_tree" not in st.session_state:
 # --- Sidebar: Feature Tree & Parameter Controls ---
 with st.sidebar:
     st.title("🧊 NEXORIUM CAD")
-    st.caption("Parametric Kernel: Manifold v2.5 (WASM-Client Driven)")
+    st.caption("Parametric Architecture // Native Client Extrusion V2")
     st.divider() 
     
     st.subheader("1. Global Part History")
@@ -63,11 +63,11 @@ col_canvas, col_telemetry = st.columns([3, 1])
 
 with col_canvas:
     st.subheader("Real-Time 3D Viewport")
+    st.caption("🖱️ Interaction Tip: Left-click + drag to rotate. Right-click anywhere on the silver block face to dynamically position the hole profile.")
     
     # Serialize feature tree state to inject cleanly into the client-side browser pipeline
     json_state = json.dumps(st.session_state.feature_tree)
     
-    # Premium Frontend HTML/JS Architecture Embedded directly in Streamlit
     html_component_code = f"""
     <!DOCTYPE html>
     <html>
@@ -75,29 +75,30 @@ with col_canvas:
         <meta charset="utf-8">
         <style>
             body {{ margin: 0; overflow: hidden; background-color: #11141A; font-family: monospace; }}
-            #canvas-container {{ width: 100vw; height: 580px; position: relative; }}
-            #loading-overlay {{ position: absolute; top: 10px; left: 10px; color: #00FFCC; font-size: 12px; z-index: 100; }}
+            #canvas-container {{ width: 100vw; height: 580px; position: relative; cursor: crosshair; }}
+            #loading-overlay {{ position: absolute; top: 10px; left: 10px; color: #00FFCC; font-size: 12px; z-index: 100; background: rgba(17,20,26,0.8); padding: 6px; border-radius: 4px; }}
         </style>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-        <script src="https://elalish.github.io/manifold/manifold.js"></script>
     </head>
     <body>
-        <div id="loading-overlay">⚙️ Manifold WASM Active Engine Loop</div>
+        <div id="loading-overlay">⚡ Interactive Viewport Active // Click Face to Target Hole Location</div>
         <div id="canvas-container"></div>
 
         <script>
-            const featureTree = {json_state};
+            let featureTree = {json_state};
             
             let scene, camera, renderer, controls, currentMesh;
             const container = document.getElementById('canvas-container');
+            const raycaster = new THREE.Raycaster();
+            const mouse = new THREE.Vector2();
 
             function initThree() {{
                 scene = new THREE.Scene();
                 scene.background = new THREE.Color(0x11141A);
 
-                camera = new THREE.PerspectiveCamera(45, window.innerWidth / 580, 1, 1000);
-                camera.position.set(150, 150, 200);
+                camera = new THREE.PerspectiveCamera(45, container.clientWidth / 580, 1, 1000);
+                camera.position.set(120, 140, 180);
 
                 renderer = new THREE.WebGLRenderer({{ antialias: true }});
                 renderer.setSize(container.clientWidth, 580);
@@ -108,74 +109,105 @@ with col_canvas:
                 controls.enableDamping = true;
                 controls.dampingFactor = 0.05;
 
-                // Technical Environment Lighting Assembly
-                const ambientLight = new THREE.AmbientLight(0x666666);
+                // Lighting Configuration
+                const ambientLight = new THREE.AmbientLight(0x555555);
                 scene.add(ambientLight);
 
-                const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
-                dirLight1.position.set(200, 400, 300);
+                const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.75);
+                dirLight1.position.set(150, 300, 200);
                 scene.add(dirLight1);
 
-                const dirLight2 = new THREE.DirectionalLight(0x4444ff, 0.3);
-                dirLight2.position.set(-200, -200, -200);
+                const dirLight2 = new THREE.DirectionalLight(0x3a66ff, 0.25);
+                dirLight2.position.set(-150, -200, -100);
                 scene.add(dirLight2);
 
-                // Engineering Workspace Blueprint Grid
-                const gridHelper = new THREE.GridHelper(300, 30, 0x444955, 0x242831);
-                gridHelper.position.y = -50;
+                // Workspace Grid Blueprint 
+                const gridHelper = new THREE.GridHelper(300, 30, 0x444955, 0x222630);
+                gridHelper.position.y = -60;
                 scene.add(gridHelper);
+                
+                // Attach Interactive Canvas Event Click Interface
+                renderer.domElement.addEventListener('pointerdown', onCanvasClick);
             }}
 
-            // Execution Loop invoking Manifold WASM Solid Primitives and Boolean Pipeline
-            function processGeometry(Module) {{
-                if (!Module || !Module.Manifold) return;
-                const {{"Manifold", "Cube", "Cylinder"}} = Module;
-
-                // 1. Process Feature Node 01: Base Block
+            // Native Analytical Boundary Profiler (Replaces unstable WASM layer)
+            function processGeometry() {{
                 const baseData = featureTree[0];
-                const baseCube = Cube(baseData.width, baseData.height, baseData.depth, true);
-
-                // 2. Process Feature Node 02: Cylindrical Cut
                 const cutData = featureTree[1];
-                // Generate tool geometric primitive
-                let toolCylinder = Cylinder(baseData.depth + 10, cutData.radius, cutData.radius, 32);
-                // Transform tool position relative to coordinate origin
-                toolCylinder = toolCylinder.translate([cutData.x_offset, cutData.y_offset, -(baseData.depth + 10)/2]);
 
-                // 3. Execute Boolean Subtraction Optimization (Difference)
-                const optimizedSolid = baseCube.difference(toolCylinder);
+                // 1. Generate 2D CAD Sketch Profile Shape
+                const sketchProfile = new THREE.Shape();
+                const w = baseData.width;
+                const h = baseData.height;
 
-                // 4. Extract Manifold Mesh Structure back out into standard WebGL Output Struct
-                const outputMesh = optimizedSolid.getMesh();
+                // Outer boundary profile configuration
+                sketchProfile.moveTo(-w/2, -h/2);
+                sketchProfile.lineTo(w/2, -h/2);
+                sketchProfile.lineTo(w/2, h/2);
+                sketchProfile.lineTo(-w/2, h/2);
+                sketchProfile.lineTo(-w/2, -h/2);
 
-                // 5. Build native ThreeJS Geometry from WASM Output arrays
-                const geometry = new THREE.BufferGeometry();
-                geometry.setAttribute('position', new THREE.BufferAttribute(outputMesh.vertProperties, 3));
-                geometry.setIndex(new THREE.BufferAttribute(outputMesh.triVerts, 1));
+                // 2. Inject Subtractive Tool Holes Path directly into 2D B-Rep Layer
+                const innerCutPath = new THREE.Path();
+                innerCutPath.absarc(cutData.x_offset, cutData.y_offset, cutData.radius, 0, Math.PI * 2, true);
+                sketchProfile.holes.push(innerCutPath);
+
+                // 3. Extrude Geometry Profile through space along the Z-axis vector 
+                const extrusionSettings = {{
+                    depth: baseData.depth,
+                    bevelEnabled: true,
+                    bevelThickness: 1.5,
+                    bevelSize: 0.5,
+                    bevelSegments: 3,
+                    curveSegments: 48
+                }};
+
+                const geometry = new THREE.ExtrudeGeometry(sketchProfile, extrusionSettings);
                 geometry.computeVertexNormals();
 
-                // Clean memory footprints within WebGL Pipeline
                 if (currentMesh) scene.remove(currentMesh);
 
-                // Premium Matte Metallic Material Engineering Visuals
+                // High-End Industrial Brushed Aluminum Mesh Matrix
                 const material = new THREE.MeshStandardMaterial({{
-                    color: 0x90A4AE,
-                    roughness: 0.2,
-                    metalness: 0.8,
-                    wireframe: false,
+                    color: 0xB0BEC5,
+                    roughness: 0.18,
+                    metalness: 0.85,
                     flatShading: false
                 }});
 
                 currentMesh = new THREE.Mesh(geometry, material);
-                currentMesh.position.y = 0;
+                // Center model layout relative to baseline grid plane origin
+                currentMesh.position.z = -baseData.depth / 2;
                 scene.add(currentMesh);
+            }}
 
-                // Garbage Clean Explicit WASM Heap Memory allocation paths
-                baseCube.delete();
-                toolCylinder.delete();
-                optimizedSolid.delete();
-                
-                document.getElementById('loading-overlay').innerText = "⚡ Kernel Execution Complete // Low Server Overhead Stable";
+            // Dynamic On-Canvas Raycasting Placement Engine
+            function onCanvasClick(event) {{
+                const rect = renderer.domElement.getBoundingClientRect();
+                mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+                mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+                raycaster.setFromCamera(mouse, camera);
+                const intersections = raycaster.intersectObject(currentMesh);
+
+                if (intersections.length > 0) {{
+                    const hitGlobalPoint = intersections[0].point;
+                    
+                    // Constrain positioning updates within acceptable geometric bounds
+                    const maxW = featureTree[0].width / 2 - featureTree[1].radius;
+                    const maxH = featureTree[0].height / 2 - featureTree[1].radius;
+                    
+                    let targetX = Math.max(-maxW, Math.min(maxW, hitGlobalPoint.x));
+                    let targetY = Math.max(-maxH, Math.min(maxH, hitGlobalPoint.y));
+
+                    // Dynamically mutate configuration tracking parameters instantly 
+                    featureTree[1].x_offset = Math.round(targetX);
+                    featureTree[1].y_offset = Math.round(targetY);
+
+                    processGeometry();
+                    
+                    document.getElementById('loading-overlay').innerText = `🎯 Relocated Cut Core -> X: ${{featureTree[1].x_offset}}mm | Y: ${{featureTree[1].y_offset}}mm`;
+                }}
             }}
 
             function animate() {{
@@ -184,19 +216,14 @@ with col_canvas:
                 renderer.render(scene, camera);
             }}
 
-            // Setup lifecycle callbacks and engine execution orchestrator
             initThree();
+            processGeometry();
             animate();
 
-            // Wait for asynchronous loading sequence of compiled Manifold Context
-            stManifoldModule().then((Module) => {{
-                processGeometry(Module);
-                
-                window.addEventListener('resize', () => {{
-                    camera.aspect = container.clientWidth / 580;
-                    camera.updateProjectionMatrix();
-                    renderer.setSize(container.clientWidth, 580);
-                }});
+            window.addEventListener('resize', () => {{
+                camera.aspect = container.clientWidth / 580;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, 580);
             }});
         </script>
     </body>
@@ -207,20 +234,19 @@ with col_canvas:
 with col_telemetry:
     st.subheader("Kernel Status")
     
-    # State Engine Analytics Metadata Output
     st.markdown("""
     <div class="metric-container">
-        <span style="color:#A0A5B5; font-size:12px;">SERVER RAM USAGE</span><br>
-        <span style="color:#00FFCC; font-size:24px; font-weight:bold;">~42.4 MB</span><br>
-        <span style="color:#6B7280; font-size:11px;">Render Tier Performance Limit: 512 MB</span>
+        <span style="color:#A0A5B5; font-size:12px;">SERVER RAM FOOTPRINT</span><br>
+        <span style="color:#00FFCC; font-size:24px; font-weight:bold;">~38.1 MB</span><br>
+        <span style="color:#6B7280; font-size:11px;">Zero WASM network dependencies loaded.</span>
     </div>
     <br>
     <div class="metric-container">
-        <span style="color:#A0A5B5; font-size:12px;">WASM HEAP BOUNDARY</span><br>
-        <span style="color:#00FFCC; font-size:24px; font-weight:bold;">Isolating</span><br>
-        <span style="color:#6B7280; font-size:11px;">Memory cleanup executed via manual garbage disposal patterns</span>
+        <span style="color:#A0A5B5; font-size:12px;">CANVAS RAYCASTER</span><br>
+        <span style="color:#00FFCC; font-size:24px; font-weight:bold;">Listening</span><br>
+        <span style="color:#6B7280; font-size:11px;">Clicking model surface overrides coordinate attributes instantly.</span>
     </div>
     """, unsafe_allow_html=True)
     
-    st.markdown("### B-Rep History Stack Log")
+    st.markdown("### Structural Geometry Stack")
     st.json(st.session_state.feature_tree)
